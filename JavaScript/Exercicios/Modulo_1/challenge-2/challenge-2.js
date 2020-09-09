@@ -1,16 +1,15 @@
 (function(win, doc) {
     'use strict';
 
-    const $number_one = doc.querySelector('[data-js="number_one"]');
-    const $number_two = doc.querySelector('[data-js="number_two"]');
+    let v_number_one = 0;
+    let v_number_two = 0;
+
     const $do = doc.querySelector('[data-js="do"]');
 
+    $do.addEventListener('click', captureValue, false);
 
-    $do.addEventListener('click', pairs, false);
-
-    function pairs($number_one, $number_two) {
-      const v_number_one = $number_one;
-      const v_number_two = $number_two;
+    function pairs(v_number_one, v_number_two) {
+      
       const base = v_number_one - v_number_two
       let increment = v_number_one;
       let arr_number_pairs = [];
@@ -25,6 +24,12 @@
 
     }
 
+    function captureValue(e) {
+      e.preventDefault();
+      v_number_one = doc.querySelector('[data-js="number-one"]').value;
+      v_number_two = doc.querySelector('[data-js="number-two"]').value;
+    }
 
+    console.log(v_number_one, v_number_two);
 
 })(window, document);
