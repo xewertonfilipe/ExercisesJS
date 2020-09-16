@@ -14,14 +14,16 @@
   function createTagFromArray() {
     names.map(function(item) {
       const tagli = createTag().tagli;
-      // tagli.style.display = 'inline-block';
-      // tagli.style.marginRight = '10px';
       const textli = createTag(item).li_textNode;
+      tagli.appendChild(textli);
       const tagA = createTag().tagA;
+      const textA = createTag(' Delete').a_textNode;
       tagA.setAttribute('href', '#');
-      const textA = createTag('Excluir').a_textNode;
-      addInFragment(tagli, textli, fragment, $ul);
-      addInFragment(tagA, textA, fragment, $ul);
+      tagA.setAttribute('id', 'del');
+      tagA.appendChild(textA);
+      tagli.appendChild(tagA);
+      addInFragment(tagli, fragment, $ul);
+      deleteItem();
     });
   }
 
@@ -30,11 +32,15 @@
     if(!!!inputValue) return alert('Empty Field');
     const tagli = createTag().tagli;
     const textli = createTag(inputValue).li_textNode;
+    tagli.appendChild(textli);
     const tagA = createTag().tagA;
+    const textA = createTag(' Delete').a_textNode;
     tagA.setAttribute('href', '#');
-    const textA = createTag('Excluir').a_textNode;
-    addInFragment(tagli, textli, fragment, $ul);
-    addInFragment(tagA, textA, fragment, $ul);
+    tagA.setAttribute('id', 'del');
+    tagA.appendChild(textA);
+    tagli.appendChild(tagA);
+    addInFragment(tagli, fragment, $ul);
+    deleteItem();
   }
 
   function createTag(textTag) {
@@ -50,10 +56,18 @@
     }
   }
 
-  function addInFragment(tag, textNode, fragment, ul) {
-    tag.appendChild(textNode);
+  function addInFragment(tag, fragment, ul) {
     fragment.appendChild(tag);
-    return ul.appendChild(fragment); 
+    return ul.appendChild(fragment);
+  }
+
+  function deleteItem() {
+    let del = doc.querySelectorAll('#del');
+    for (const iterator of del) {
+        iterator.addEventListener('click', function() {
+          iterator.parentNode.remove();
+        }, true);
+    }
   }
 
 })(window, document);
