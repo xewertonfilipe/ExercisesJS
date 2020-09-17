@@ -13,12 +13,12 @@
 
   function createTagFromArray() {
     names.map(function(item) {
-      const tagli = createTag('li', item)
-      const tagA = createTag('a', ' Delete');
-      createAttribute(tagA, 'href', '#');
-      createAttribute(tagA, 'id', 'del');
-      tagli.appendChild(tagA);
-      addInFragment(tagli, fragment, $ul);
+      const li = createTag('li', item)
+      const a = createTag('a', ' Delete');
+      createAttribute(a, 'href', '#');
+      createAttribute(a, 'id', 'del');
+      li.appendChild(a);
+      addInFragment(li, fragment, $ul);
       deleteItem();
     });
   }
@@ -27,12 +27,12 @@
     const inputValue = $input.value;
     if(!!!inputValue) return alert('Empty Field');
     $input.value = '';
-    const tagli = createTag('li', inputValue)
-    const tagA = createTag('a', ' Delete');
-    createAttribute(tagA, 'href', '#');
-    createAttribute(tagA, 'id', 'del');
-    tagli.appendChild(tagA);
-    addInFragment(tagli, fragment, $ul);
+    const li = createTag('li', inputValue)
+    const a = createTag('a', ' Delete');
+    createAttribute(a, 'href', '#');
+    createAttribute(a, 'id', 'del');
+    li.appendChild(a);
+    addInFragment(li, fragment, $ul);
     deleteItem();
   }
 
