@@ -13,31 +13,27 @@
 
   function createTagFromArray() {
     names.map(function(item) {
-      const tagli = createTag().tag;
-      const textli = createTag(item).textNode;
+      const tagli = createTag('li', item);
       addInFragment(tagli, textli, fragment, $ul);
     });
   }
 
   function addValueInUl() {
     const inputValue = $input.value;
-    if(!!!inputValue) return alert('Empty Field'); 
-    const tagli = createTag().tag;
-    const textli = createTag(inputValue).textNode;
-    addInFragment(tagli, textli, fragment, $ul);
+    if(!!!inputValue) return alert('Empty Field');
+    $input.value = '';
+    const tagli = createTag('li', inputValue);
+    addInFragment(tagli, fragment, $ul);
   }
 
-  function createTag(textTag) {
-    const tagli = doc.createElement('li');
-    const textli = doc.createTextNode(textTag);
-    return {
-      tag: tagli,
-      textNode: textli
-    }
+  function createTag(tag, textNode) {
+    const element = doc.createElement(tag);
+    const text = doc.createTextNode(textNode);
+    element.appendChild(text);
+    return element;
   }
 
-  function addInFragment(tag, textNode, fragment, ul) {
-    tag.appendChild(textNode);
+  function addInFragment(tag, fragment, ul) {
     fragment.appendChild(tag);
     return ul.appendChild(fragment); 
   }

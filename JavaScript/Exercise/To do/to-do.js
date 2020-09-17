@@ -13,14 +13,10 @@
 
   function createTagFromArray() {
     names.map(function(item) {
-      const tagli = createTag().tagli;
-      const textli = createTag(item).li_textNode;
-      tagli.appendChild(textli);
-      const tagA = createTag().tagA;
-      const textA = createTag(' Delete').a_textNode;
-      tagA.setAttribute('href', '#');
-      tagA.setAttribute('id', 'del');
-      tagA.appendChild(textA);
+      const tagli = createTag('li', item)
+      const tagA = createTag('a', ' Delete');
+      createAttribute(tagA, 'href', '#');
+      createAttribute(tagA, 'id', 'del');
       tagli.appendChild(tagA);
       addInFragment(tagli, fragment, $ul);
       deleteItem();
@@ -30,30 +26,25 @@
   function addValueInUl() {
     const inputValue = $input.value;
     if(!!!inputValue) return alert('Empty Field');
-    const tagli = createTag().tagli;
-    const textli = createTag(inputValue).li_textNode;
-    tagli.appendChild(textli);
-    const tagA = createTag().tagA;
-    const textA = createTag(' Delete').a_textNode;
-    tagA.setAttribute('href', '#');
-    tagA.setAttribute('id', 'del');
-    tagA.appendChild(textA);
+    $input.value = '';
+    const tagli = createTag('li', inputValue)
+    const tagA = createTag('a', ' Delete');
+    createAttribute(tagA, 'href', '#');
+    createAttribute(tagA, 'id', 'del');
     tagli.appendChild(tagA);
     addInFragment(tagli, fragment, $ul);
     deleteItem();
   }
 
-  function createTag(textTag) {
-    const tagli = doc.createElement('li');
-    const textli = doc.createTextNode(textTag);
-    const tagA = doc.createElement('a');
-    const textA = doc.createTextNode(textTag);
-    return {
-      tagli: tagli,
-      li_textNode: textli,
-      tagA: tagA,
-      a_textNode: textA
-    }
+  function createTag(tag, textNode) {
+    const element = doc.createElement(tag);
+    const text = doc.createTextNode(textNode);
+    element.appendChild(text);
+    return element;
+  }
+
+  function createAttribute(tag, attribute, value ) {
+    tag.setAttribute(attribute, value);
   }
 
   function addInFragment(tag, fragment, ul) {
@@ -66,7 +57,7 @@
     for (const iterator of del) {
         iterator.addEventListener('click', function() {
           iterator.parentNode.remove();
-        }, true);
+        }, false);
     }
   }
 
