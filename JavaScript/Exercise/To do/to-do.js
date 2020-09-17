@@ -2,7 +2,7 @@
   'use strict';
   
   let fragment = doc.createDocumentFragment();
-  const names = ['Make coffe', 'Studying JavaScript', 'Refatorar o código'];
+  const names = ['Make coffe', 'Studying JavaScript', 'Refactor the code'];
   const $input = doc.querySelector('[data-js="value"]');
   const $btnAdd = doc.querySelector('[data-js="add"]');
   const $ul = doc.querySelector('#names');
