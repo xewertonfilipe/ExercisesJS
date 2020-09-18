@@ -2,38 +2,36 @@
   'use strict';
   
   let fragment = doc.createDocumentFragment();
-  const todos = ['Make coffe', 'Studying JavaScript', 'Refactor the code'];
+  const $ul = doc.querySelector('#todos');
   const $input = doc.querySelector('[data-js="value"]');
   const $btnAdd = doc.querySelector('[data-js="add"]');
-  const $ul = doc.querySelector('#todos');
+  const todos = ['Make coffe', 'Studying JavaScript', 'Refactor the code'];
 
-  $btnAdd.addEventListener('click', addValueInUl, false);
+  $btnAdd.addEventListener('click', addTodo, false);
 
-  createTagFromArray(todos);
+  createTagFromArray();
 
-  function createTagFromArray(todos) {
-    todos.map(function(item) {
-      const li = createTag('li', item);
+  function createTagFromArray() {
+    $ul.innerHTML = '';
+    
+    for (let todo of todos) {
+      const li = createTag('li', todo);
       const a = createTag('a', ' Delete');
+      const positionTodo = todos.indexOf(todo);
       createAttribute(a, 'href', '#');
-      createAttribute(a, 'id', 'del');
+      createAttribute(a, 'data-js', positionTodo);
       li.appendChild(a);
       addFragment(li, fragment, $ul);
-      deleteItem();
-    });
+      deleteTodo(positionTodo);
+    }
   }
 
-  function addValueInUl() {
+  function addTodo() {
     const inputValue = $input.value;
     if(!!!inputValue) return alert('Empty Field');
+    todos.push(inputValue);
     $input.value = '';
-    const li = createTag('li', inputValue)
-    const a = createTag('a', ' Delete');
-    createAttribute(a, 'href', '#');
-    createAttribute(a, 'id', 'del');
-    li.appendChild(a);
-    addFragment(li, fragment, $ul);
-    deleteItem();
+    createTagFromArray();
   }
 
   function createTag(tag, textNode) {
@@ -52,13 +50,12 @@
     return ul.appendChild(fragment);
   }
 
-  function deleteItem() {
-    let del = doc.querySelectorAll('#del');
-    for (const iterator of del) {
-        iterator.addEventListener('click', function() {
-          iterator.parentNode.remove();
+  function deleteTodo(positionTodo) {
+    let delTodo = doc.querySelector('[data-js="' +positionTodo+ '"');
+    console.log(delTodo);
+    delTodo.addEventListener('click', function() {
+          todos.splice(positionTodo, 1)
         }, false);
-    }
   }
 
 })(window, document);
