@@ -5,7 +5,7 @@
   const $ul = doc.querySelector('#todos');
   const $input = doc.querySelector('[data-js="value"]');
   const $btnAdd = doc.querySelector('[data-js="add"]');
-  const todos = ['Make coffe', 'Studying JavaScript', 'Refactor the code'];
+  let todos = JSON.parse(localStorage.getItem('list_todos')) || [];
 
   $btnAdd.addEventListener('click', addTodo, false);
 
@@ -32,6 +32,7 @@
     todos.push(inputValue);
     $input.value = '';
     createTagFromArray();
+    saveToStorage();
   }
 
   function createTag(tag, textNode) {
@@ -55,7 +56,12 @@
     delTodo.addEventListener('click', function() {
           todos.splice(positionTodo, 1)
           createTagFromArray();
+          saveToStorage();
         }, false);
+  }
+
+  function saveToStorage() {
+    localStorage.setItem('list_todos', JSON.stringify(todos));
   }
 
 })(window, document);
