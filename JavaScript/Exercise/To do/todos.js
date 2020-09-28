@@ -52,9 +52,9 @@
 
   function deleteTodo(positionTodo) {
     let delTodo = doc.querySelector('[data-js="' +positionTodo+ '"');
-    console.log(delTodo);
     delTodo.addEventListener('click', function() {
           todos.splice(positionTodo, 1)
+          createTagFromArray();
         }, false);
   }
 
