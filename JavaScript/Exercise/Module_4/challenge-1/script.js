@@ -11,7 +11,7 @@
     })
   }
 
-  setInterval(() => {
+  setTimeout(() => {
     checkAge(19)
     .then(function() {
       console.log('Maior que 18')

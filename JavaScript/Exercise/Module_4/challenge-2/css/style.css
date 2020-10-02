@@ -1,0 +1,17 @@
+body {
+  background-color: #e5eff1;
+}
+
+.container-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.gitHub {
+  margin: 1% 0 2% 0;
+}
+
+ol {
+  list-style-type: upper-roman;
+}
