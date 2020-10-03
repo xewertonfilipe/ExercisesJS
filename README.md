@@ -1,1 +1,1 @@
-# Rocketseat javascript exercises
+# Javascript exercises - Rocketseat

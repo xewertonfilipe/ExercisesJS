@@ -21,11 +21,11 @@
   }
 
   function createRepos(resolve) {
-    let ul = createTag('ol');
-    createAttribute(ul, 'data-js', 'list-repos');
-    addRepoInLiAndUl(resolve, ul);
-    removeUl();
-    addInFragment(fragment, ul)
+    let ol = createTag('ol');
+    createAttribute(ol, 'data-js', 'list-repos');
+    addRepoInLiAndUl(resolve, ol);
+    removeOl();
+    addInFragment(fragment, ol)
   }
 
   function createTag(tag) {
@@ -55,10 +55,11 @@
     return ul.appendChild(tagWithTextNode);
   }
 
-  function removeUl() {
-    const $ul = doc.querySelector('[data-js="list-repos"]');
-    if($ul)
-      doc.body.removeChild($ul);
+  function removeOl() {
+    const $div = doc.querySelector('[data-js="repos"]');
+    const $ol = doc.querySelector('[data-js="list-repos"]');
+    if($ol)
+      $div.removeChild($ol);
   }
 
   function addInFragment(fragment, ul) {
