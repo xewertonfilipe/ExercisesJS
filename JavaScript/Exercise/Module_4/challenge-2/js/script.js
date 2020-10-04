@@ -1,31 +1,76 @@
 (function(win, doc) {
   'use strict';
 
+  let fragment = doc.createDocumentFragment();
   const $inputNameUser = doc.querySelector('[data-js="user"]');
   const $btnSearchUser = doc.querySelector('[data-js="search-user"]');
+  const $load = doc.querySelector('[data-js="load"]');
+  let $subtitle = doc.querySelector('[data-js="subtitle"]');
   const $repos = doc.querySelector('[data-js="repos"]');
-  let fragment = doc.createDocumentFragment();
 
   $btnSearchUser.addEventListener('click', searchUser, false);
-  
-  
+    
   function searchUser() {
+    load();
+    removeOl();
+    disableButton($btnSearchUser, 'disabled');
+    removeSubTitleWithUser();
     const user = $inputNameUser.value;
-    axios.get('https://api.github.com/users/' + user + '/repos')
+    setTimeout(() => {
+      axios.get('https://api.github.com/users/' + user + '/repos')
       .then(function(resolve) {
-       createRepos(resolve);
+        createRepos(resolve);
       })
       .catch(function(error) {
         console.log(error);
       });
+    },2000)
+  }
+
+  function clearInput(input) {
+    return input.value = '';
+  }
+
+  function load() {
+    $load.classList.toggle('load-off');
+  }
+
+  function disableButton(btn, status) {
+    createAttribute(btn, status, '');
+  }
+
+  function enableButton(btn) {
+    btn.removeAttribute('disabled');
+  }
+
+  function showSubTitleWithUser($inputNameUser) {
+    if(!$subtitle.classList.contains('showSubTitle')) {
+      $subtitle.classList.add('showSubTitle');
+      $subtitle.removeChild($subtitle.firstElementChild);
+      addElementChild($subtitle, 'List of repositories:');
+    }
+  }
+
+  function addElementChild(element, textNode) {
+    const newSubTitle = createTagWithTextNode('h2', textNode + ' ' + $inputNameUser.value);
+    return element.appendChild(newSubTitle);
+  }
+
+  function removeSubTitleWithUser() {
+    if($subtitle.classList.contains('showSubTitle')) {
+      $subtitle.classList.remove('showSubTitle');
+    }
   }
 
   function createRepos(resolve) {
+    load();
+    showSubTitleWithUser($inputNameUser);
     let ol = createTag('ol');
     createAttribute(ol, 'data-js', 'list-repos');
-    addRepoInLiAndUl(resolve, ol);
-    removeOl();
+    addRepoInLiAndOl(resolve, ol);
     addInFragment(fragment, ol)
+    enableButton($btnSearchUser);
+    clearInput($inputNameUser);
   }
 
   function createTag(tag) {
@@ -37,10 +82,10 @@
     tag.setAttribute(attribute, value);
   }
 
-  function addRepoInLiAndUl(resolve, ul) {
+  function addRepoInLiAndOl(resolve, ol) {
     for (const repos of resolve.data) {
       const li = createTagWithTextNode('li', repos.name)
-      addValueInUl(ul, li);
+      addValueInOl(ol, li);
     }
   }
 
@@ -51,8 +96,8 @@
     return element;
   }
 
-  function addValueInUl(ul, tagWithTextNode) {
-    return ul.appendChild(tagWithTextNode);
+  function addValueInOl(ol, tagWithTextNode) {
+    return ol.appendChild(tagWithTextNode);
   }
 
   function removeOl() {
@@ -62,8 +107,8 @@
       $div.removeChild($ol);
   }
 
-  function addInFragment(fragment, ul) {
-    fragment.appendChild(ul);
+  function addInFragment(fragment, ol) {
+    fragment.appendChild(ol);
     return $repos.appendChild(fragment);
   }
 

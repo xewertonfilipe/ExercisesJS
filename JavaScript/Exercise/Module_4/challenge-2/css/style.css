@@ -12,6 +12,20 @@ body {
   margin: 1% 0 2% 0;
 }
 
-ol {
-  list-style-type: upper-roman;
+.load img {
+  width: 300px;
+  height: 300px;
+}
+
+.load-off {
+  display: none;
+}
+
+.subtitle {
+  display: none;
+  margin-bottom: -1%;
+}
+
+.showSubTitle {
+  display: flex;
 }
