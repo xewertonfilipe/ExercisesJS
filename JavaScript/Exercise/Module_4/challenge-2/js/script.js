@@ -6,25 +6,28 @@
   const $btnSearchUser = doc.querySelector('[data-js="search-user"]');
   const $load = doc.querySelector('[data-js="load"]');
   let $subtitle = doc.querySelector('[data-js="subtitle"]');
-  const $repos = doc.querySelector('[data-js="repos"]');
+  let $repos = doc.querySelector('[data-js="repos"]');
 
-  $btnSearchUser.addEventListener('click', searchUser, false);
+  $btnSearchUser.addEventListener('click', startAplication, false);
     
-  function searchUser() {
+  function startAplication() {
     load();
     removeOl();
     disableButton($btnSearchUser, 'disabled');
     removeSubTitleWithUser();
-    const user = $inputNameUser.value;
+    searchUser($inputNameUser.value);
+  }
+
+  function searchUser(user) {
     setTimeout(() => {
       axios.get('https://api.github.com/users/' + user + '/repos')
       .then(function(resolve) {
         createRepos(resolve);
       })
       .catch(function(error) {
-        console.log(error);
+        userNotFound(error);
       });
-    },2000)
+    }, 1800)
   }
 
   function clearInput(input) {
@@ -52,7 +55,7 @@
   }
 
   function addElementChild(element, textNode) {
-    const newSubTitle = createTagWithTextNode('h2', textNode + ' ' + $inputNameUser.value);
+    const newSubTitle = createTagWithTextNode('h3', textNode + ' ' + $inputNameUser.value);
     return element.appendChild(newSubTitle);
   }
 
@@ -63,14 +66,24 @@
   }
 
   function createRepos(resolve) {
+    if(userNotFound(resolve)) return;
     load();
     showSubTitleWithUser($inputNameUser);
     let ol = createTag('ol');
     createAttribute(ol, 'data-js', 'list-repos');
     addRepoInLiAndOl(resolve, ol);
-    addInFragment(fragment, ol)
+    addFragmentInApp(ol, $repos);
     enableButton($btnSearchUser);
     clearInput($inputNameUser);
+  }
+
+  function userNotFound(resolve, error) {
+    if(resolve.data.length === 0) {
+      load();
+      enableButton($btnSearchUser);
+      console.log("User not found: ", error);
+      return true;
+    }
   }
 
   function createTag(tag) {
@@ -107,9 +120,9 @@
       $div.removeChild($ol);
   }
 
-  function addInFragment(fragment, ol) {
-    fragment.appendChild(ol);
-    return $repos.appendChild(fragment);
+  function addFragmentInApp(element, appLocation) {
+    fragment.appendChild(element);
+    return appLocation.appendChild(fragment);
   }
 
 })(window, document);
