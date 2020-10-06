@@ -2,11 +2,13 @@
   'use strict';
 
   let fragment = doc.createDocumentFragment();
+  axios.defaults.baseURL = 'https://api.github.com/users/';
   const $inputNameUser = doc.querySelector('[data-js="user"]');
   const $btnSearchUser = doc.querySelector('[data-js="search-user"]');
   const $load = doc.querySelector('[data-js="load"]');
   let $subtitle = doc.querySelector('[data-js="subtitle"]');
   let $repos = doc.querySelector('[data-js="repos"]');
+
 
   $btnSearchUser.addEventListener('click', startAplication, false);
     
@@ -19,15 +21,15 @@
   }
 
   function searchUser(user) {
-    setTimeout(() => {
-      axios.get('https://api.github.com/users/' + user + '/repos')
-      .then(function(resolve) {
-        createRepos(resolve);
+      axios.get(user + '/repos', {
+        timeout: 2000
+      })
+      .then(function(response) {
+        createRepos(response);
       })
       .catch(function(error) {
         userNotFound(error);
       });
-    }, 1800)
   }
 
   function clearInput(input) {
@@ -65,20 +67,28 @@
     }
   }
 
-  function createRepos(resolve) {
-    if(userNotFound(resolve)) return;
+  function createRepos(response) {
+    if(userNotFound(response)) return;
+    console.log(response.data);
+    console.log(response.status);
+    console.log(response.statusText);
+    console.log(response.headers);
+    console.log(response.config);
     load();
     showSubTitleWithUser($inputNameUser);
     let ol = createTag('ol');
     createAttribute(ol, 'data-js', 'list-repos');
-    addRepoInLiAndOl(resolve, ol);
+    addRepoInLiAndOl(response, ol);
     addFragmentInApp(ol, $repos);
     enableButton($btnSearchUser);
     clearInput($inputNameUser);
   }
 
-  function userNotFound(resolve, error) {
-    if(resolve.data.length === 0) {
+  function userNotFound(response, error) {
+    // console.log('response', response);
+    // console.log('error:', error);
+    
+    if(response.data.length === 0) {
       load();
       enableButton($btnSearchUser);
       console.log("User not found: ", error);
@@ -95,8 +105,8 @@
     tag.setAttribute(attribute, value);
   }
 
-  function addRepoInLiAndOl(resolve, ol) {
-    for (const repos of resolve.data) {
+  function addRepoInLiAndOl(response, ol) {
+    for (const repos of response.data) {
       const li = createTagWithTextNode('li', repos.name)
       addValueInOl(ol, li);
     }
