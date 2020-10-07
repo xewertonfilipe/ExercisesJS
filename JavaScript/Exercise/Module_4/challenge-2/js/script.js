@@ -17,13 +17,13 @@
     removeOl();
     disableButton($btnSearchUser, 'disabled');
     removeSubTitleWithUser();
+    setTimeout(() => {
     searchUser($inputNameUser.value);
+    }, 2000);
   }
 
   function searchUser(user) {
-      axios.get(user + '/repos', {
-        timeout: 2000
-      })
+      axios.get(user + '/repos')
       .then(function(response) {
         createRepos(response);
       })
@@ -68,7 +68,7 @@
   }
 
   function createRepos(response) {
-    if(userNotFound(response)) return;
+    // if(userNotFound(response)) return;
     console.log(response.data);
     console.log(response.status);
     console.log(response.statusText);
@@ -88,12 +88,12 @@
     // console.log('response', response);
     // console.log('error:', error);
     
-    if(response.data.length === 0) {
-      load();
-      enableButton($btnSearchUser);
-      console.log("User not found: ", error);
-      return true;
-    }
+    // if(response.data.length === 0) {
+    //   load();
+    //   enableButton($btnSearchUser);
+    //   console.log("User not found: ", error);
+    //   return true;
+    // }
   }
 
   function createTag(tag) {
