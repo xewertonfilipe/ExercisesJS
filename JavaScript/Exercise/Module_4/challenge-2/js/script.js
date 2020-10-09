@@ -16,7 +16,7 @@
     load();
     removeOl();
     disableButton($btnSearchUser, 'disabled');
-    removeSubTitleWithUser();
+    removeClassInSubTitle();
     setTimeout(() => {
     searchUser($inputNameUser.value);
     }, 2000);
@@ -28,7 +28,7 @@
         createRepos(response);
       })
       .catch(function(error) {
-        userNotFound(error);
+        userNotFound();
       });
   }
 
@@ -61,19 +61,12 @@
     return element.appendChild(newSubTitle);
   }
 
-  function removeSubTitleWithUser() {
-    if($subtitle.classList.contains('showSubTitle')) {
-      $subtitle.classList.remove('showSubTitle');
-    }
+  function removeClassInSubTitle() {
+    if($subtitle.classList.contains('showSubTitle'))
+     return $subtitle.classList.remove('showSubTitle');
   }
 
   function createRepos(response) {
-    // if(userNotFound(response)) return;
-    console.log(response.data);
-    console.log(response.status);
-    console.log(response.statusText);
-    console.log(response.headers);
-    console.log(response.config);
     load();
     showSubTitleWithUser($inputNameUser);
     let ol = createTag('ol');
@@ -84,16 +77,21 @@
     clearInput($inputNameUser);
   }
 
-  function userNotFound(response, error) {
-    // console.log('response', response);
-    // console.log('error:', error);
-    
-    // if(response.data.length === 0) {
-    //   load();
-    //   enableButton($btnSearchUser);
-    //   console.log("User not found: ", error);
-    //   return true;
-    // }
+  function userNotFound() {
+    load();
+    addSubTitleUserNotFound();
+  }
+
+  function addClassInSubtitle() {
+    if(!$subtitle.classList.contains('showSubTitle'))
+       $subtitle.classList.add('showSubTitle');
+  }
+
+  function addSubTitleUserNotFound() {
+    $subtitle.removeChild($subtitle.firstElementChild);
+    const notUser = createTagWithTextNode('h3', 'User not found.');
+    addFragmentInApp(notUser, $subtitle);
+    addClassInSubtitle();
   }
 
   function createTag(tag) {
