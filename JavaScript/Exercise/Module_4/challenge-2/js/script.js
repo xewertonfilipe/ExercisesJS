@@ -6,14 +6,14 @@
   const $inputNameUser = doc.querySelector('[data-js="user"]');
   const $btnSearchUser = doc.querySelector('[data-js="search-user"]');
   const $load = doc.querySelector('[data-js="load"]');
-  let $subtitle = doc.querySelector('[data-js="subtitle"]');
+  let $subtitle = doc.querySelector('[data-js="notification"]');
   let $repos = doc.querySelector('[data-js="repos"]');
 
 
   $btnSearchUser.addEventListener('click', startAplication, false);
     
   function startAplication() {
-    load();
+    Toggleload();
     removeOl();
     disableButton($btnSearchUser, 'disabled');
     removeClassInSubTitle();
@@ -36,7 +36,7 @@
     return input.value = '';
   }
 
-  function load() {
+  function Toggleload() {
     $load.classList.toggle('load-off');
   }
 
@@ -48,26 +48,25 @@
     btn.removeAttribute('disabled');
   }
 
-  function showSubTitleWithUser($inputNameUser) {
-    if(!$subtitle.classList.contains('showSubTitle')) {
-      $subtitle.classList.add('showSubTitle');
+  function showSubTitleWithUser() {
+      $subtitle.classList.add('showNotification');
       $subtitle.removeChild($subtitle.firstElementChild);
       addElementChild($subtitle, 'List of repositories:');
-    }
   }
 
   function addElementChild(element, textNode) {
-    const newSubTitle = createTagWithTextNode('h3', textNode + ' ' + $inputNameUser.value);
+    const newSubTitle = createTagWithTextNode('p', textNode + ' ' + $inputNameUser.value);
     return element.appendChild(newSubTitle);
   }
 
   function removeClassInSubTitle() {
-    if($subtitle.classList.contains('showSubTitle'))
-     return $subtitle.classList.remove('showSubTitle');
+    if($subtitle.classList.contains('showNotification'))
+     return $subtitle.classList.remove('showNotification');
   }
 
   function createRepos(response) {
-    load();
+    Toggleload();
+    hasRepo(response);
     showSubTitleWithUser($inputNameUser);
     let ol = createTag('ol');
     createAttribute(ol, 'data-js', 'list-repos');
@@ -78,20 +77,27 @@
   }
 
   function userNotFound() {
-    load();
-    addSubTitleUserNotFound();
+    Toggleload();
+    addNotification('not found.');
+    enableButton($btnSearchUser);
+    clearInput($inputNameUser);
+    addFocus($inputNameUser);
   }
 
-  function addClassInSubtitle() {
-    if(!$subtitle.classList.contains('showSubTitle'))
-       $subtitle.classList.add('showSubTitle');
+  function addFocus(element) {
+    element.focus();
   }
 
-  function addSubTitleUserNotFound() {
+  function addClassInNotification() {
+    if(!$subtitle.classList.contains('showNotification'))
+       $subtitle.classList.add('showNotification');
+  }
+
+  function addNotification(text) {
     $subtitle.removeChild($subtitle.firstElementChild);
-    const notUser = createTagWithTextNode('h3', 'User not found.');
+    const notUser = createTagWithTextNode('p', 'User "' + $inputNameUser.value + '" ' + text);
     addFragmentInApp(notUser, $subtitle);
-    addClassInSubtitle();
+    addClassInNotification();
   }
 
   function createTag(tag) {
@@ -99,8 +105,8 @@
     return element;
   }
 
-  function createAttribute(tag, attribute, value) {
-    tag.setAttribute(attribute, value);
+  function createAttribute(element, attribute, value) {
+    element.setAttribute(attribute, value);
   }
 
   function addRepoInLiAndOl(response, ol) {
@@ -131,6 +137,14 @@
   function addFragmentInApp(element, appLocation) {
     fragment.appendChild(element);
     return appLocation.appendChild(fragment);
+  }
+
+  function hasRepo(response) {
+    if(!response.data.length) {
+      console.log(response);
+      addNotification('not has repos.');
+      return;
+    }
   }
 
 })(window, document);

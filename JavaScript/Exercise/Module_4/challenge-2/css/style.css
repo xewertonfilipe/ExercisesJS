@@ -21,11 +21,11 @@ body {
   display: none;
 }
 
-.subtitle {
+.notification {
   display: none;
   margin-bottom: -1%;
 }
 
-.showSubTitle {
+.showNotification {
   display: flex;
 }
