@@ -1,14 +1,13 @@
 (function(win, doc) {
   'use strict';
 
-  let fragment = doc.createDocumentFragment();
   axios.defaults.baseURL = 'https://api.github.com/users/';
+  const fragment = doc.createDocumentFragment();
   const $userName = doc.querySelector('[data-js="userName"]');
   const $btnSearchUser = doc.querySelector('[data-js="search-user"]');
   const $load = doc.querySelector('[data-js="load"]');
-  let $notification = doc.querySelector('[data-js="notification"]');
-  let $repos = doc.querySelector('[data-js="repos"]');
-
+  const $notification = doc.querySelector('[data-js="notification"]');
+  const $repos = doc.querySelector('[data-js="repos"]');
 
   $btnSearchUser.addEventListener('click', startAplication, false);
   $userName.addEventListener('keyup', ({key}) => {
@@ -17,9 +16,8 @@
     
   function startAplication() {
     toggleLoad();
-    removeListOfRepos();
-    disableButton($btnSearchUser, 'disabled');
-    removeNotification();
+    clearInfo();
+    disableButton($btnSearchUser);
     setTimeout(() => {
     searchUser($userName.value);
     }, 2000);
@@ -29,28 +27,21 @@
     $load.classList.toggle('load-off');
   }
 
-  function removeListOfRepos() {
-    const $div = doc.querySelector('[data-js="repos"]');
-    const $ol = doc.querySelector('[data-js="list-repos"]');
-    if($ol)
-      $div.removeChild($ol);
+  function clearInfo() {
+    if($repos.firstElementChild) {
+      $repos.removeChild($repos.firstElementChild);
+    }
+    if($notification.firstElementChild) {
+      $notification.removeChild($notification.firstElementChild);
+    }
   }
 
-  function disableButton(element, status) {
-    createAttribute(element, status, '');
+  function disableButton(element) {
+    createAttribute(element, 'disabled', '');
   }
 
-  function createAttribute(element, status, value) {
-    element.setAttribute(status, value);
-  }
-
-  // function removeNotification() {
-  //   if($notification.classList.contains('showNotification'))
-  //    return $notification.classList.remove('showNotification');
-  // }
-
-  function removeNotification() {
-    $notification.removeChild($notification.firstElementChild);
+  function createAttribute(element, name, value) {
+    element.setAttribute(name, value);
   }
 
   function searchUser(user) {
@@ -66,7 +57,7 @@
   function hasRepo(response) {
     if(!response.data.length) {
       toggleLoad();
-      addNotification('not has repos.');
+      addNotification('User not has repos: ');
       enableButton($btnSearchUser);
       clearInput($userName);
       addFocus($userName);
@@ -76,12 +67,9 @@
   }
   
   function addNotification(textNode) {
-    const tagFull = createTagWithTextNode('p', 'User "' + $userName.value + '" ' + textNode);
+    const tagFull = createTagWithTextNode('p', textNode + $userName.value);
     addFragmentInApp(tagFull, $notification);
-    addClassInNotification();
   }
-
-  
 
   function createTagWithTextNode(tag, textNode) {
     const element = doc.createElement(tag);
@@ -93,11 +81,6 @@
   function addFragmentInApp(element, appLocation) {
     fragment.appendChild(element);
     return appLocation.appendChild(fragment);
-  }
-
-  function addClassInNotification() {
-    if(!$notification.classList.contains('showNotification'))
-       $notification.classList.add('showNotification');
   }
 
   function enableButton(btn) {
@@ -114,37 +97,11 @@
 
   function createRepos(response) {
     toggleLoad();
-    showNotificationWithUser();
-    let olOfRepos = createTag('ol');
-    createAttribute(olOfRepos, 'data-js', 'list-repos');
-    addRepoInLiAndOl(response, olOfRepos);
-    addFragmentInApp(olOfRepos, $repos);
-    enableButton($btnSearchUser);
-    clearInput($userName);
-    addFocus($userName);
-  }
-
-  function showNotificationWithUser() {
-      $notification.classList.add('showNotification');
-      $notification.removeChild($notification.firstElementChild);
-      addNotification('List of repositories: ');
-  }
-
-  // function addNotification(text) {
-  //   $notification.removeChild($notification.firstElementChild);
-  //   const text = createTagWithTextNode('p', 'User "' + $userName.value + '" ' + text);
-  //   addFragmentInApp(text, $notification);
-  //   addClassInNotification();
-  // }
-
-  // function addElementChild(element, textNode) {
-  //   const newNotification = createTagWithTextNode('p', textNode + $userName.value);
-  //   addFragmentInApp(newNotification, $notification);
-  // }
-
-  function userNotFound() {
-    toggleLoad();
-    addNotification('not found.');
+    addNotification('List of repositories: ');
+    let olRepos = createTag('ol');
+    createAttribute(olRepos, 'data-js', 'list-repos');
+    addRepoInLiAndOl(response, olRepos);
+    addFragmentInApp(olRepos, $repos);
     enableButton($btnSearchUser);
     clearInput($userName);
     addFocus($userName);
@@ -164,6 +121,14 @@
 
   function addValueInOl(ol, tagWithTextNode) {
     return ol.appendChild(tagWithTextNode);
+  }
+
+  function userNotFound() {
+    toggleLoad();
+    addNotification('User not found: ');
+    enableButton($btnSearchUser);
+    clearInput($userName);
+    addFocus($userName);
   }
 
 })(window, document);

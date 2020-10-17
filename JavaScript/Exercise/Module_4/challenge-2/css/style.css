@@ -20,12 +20,3 @@ body {
 .load-off {
   display: none;
 }
-
-.notification {
-  display: none;
-  margin-bottom: -1%;
-}
-
-.showNotification {
-  display: flex;
-}
